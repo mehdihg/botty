@@ -13,9 +13,9 @@ const Home = () => {
   const sendMessageHandler = async()=>{
     setMessage('')
     Keyboard.dismiss()
-    setChatHistory([...chatHistory,{userMessage: message}]);
+   setChatHistory([...chatHistory,{userMessage: message}]);
     scrollViewRef.current.scrollToEnd({ animated: true });
-      const apiKey = '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';
+      const apiKey = '';
       const response = await axios.post(
         'https://api.openai.com/v1/engines/text-davinci-003/completions',
         {
@@ -67,7 +67,6 @@ const Home = () => {
 
         <FlatList
           ref={scrollViewRef}
-          scroll
           contentContainerStyle={styles.messageContainer}
           data={chatHistory}
           renderItem={(item) => {
