@@ -6,6 +6,7 @@ import Home from './screen/Home';
 import { NavigationContainer } from '@react-navigation/native';
 import Root from './Root/Root';
 import { StatusBar } from 'expo-status-bar';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 
 export default function App() {
@@ -13,6 +14,8 @@ export default function App() {
 const Stack = createNativeStackNavigator();
   return (
     <>
+
+    <SafeAreaProvider>
     <StatusBar style='light'/>
     <NavigationContainer>
     <Stack.Navigator>
@@ -25,6 +28,7 @@ const Stack = createNativeStackNavigator();
 
   </Stack.Navigator>
   </NavigationContainer>
+  </SafeAreaProvider>
   </>
 
   );

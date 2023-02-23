@@ -1,59 +1,58 @@
-import React, { useRef, useState } from "react";
-import axios from "axios"
-import { FlatList, Keyboard, StyleSheet, Text, TextInput, View } from "react-native";
+import React, { useEffect, useRef, useState } from "react";
+import axios from "axios";
+import {
+  FlatList,
+  Keyboard,
+  KeyboardAvoidingView,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
+import { SafeAreaView } from "react-native-safe-area-context";
+
 
 const Home = () => {
-  const [message,setMessage] = useState("")
-  const [chatHistory,setChatHistory]=useState([])
-
-  const messageHandler=(textMessage)=>{
-    setMessage(textMessage)
-  }
-  const sendMessageHandler = async()=>{
-    setMessage('')
-    Keyboard.dismiss()
-   setChatHistory([...chatHistory,{userMessage: message}]);
-    scrollViewRef.current.scrollToEnd({ animated: true });
-      const apiKey = '';
-      const response = await axios.post(
-        'https://api.openai.com/v1/engines/text-davinci-003/completions',
-        {
-          prompt: message,
-          max_tokens: 50,
-          temperature: 0.5,
-        },
-        { headers: { Authorization: `Bearer ${apiKey}` } }
-      );
-      const { choices } = response.data;
-      const botMessage = choices[0].text.trim();
-
-      setChatHistory([...chatHistory, {userMessage: message, botMessage }]);
-      scrollViewRef.current.scrollToEnd({ animated: true });
- 
-  }
-
-  const data = [
-    {
-      text: "hi bye najor san kadan nakhabdr eshak lar doqu mr hassan babaei najori shahran chekhabar df dgffr fcyyg gfgdg retgd ret dg reretfdg drt dg ry dg ddgdf ssssssssssssssssssssssssssssss",
-      id: 1,
-      status: "question",
-    },
-    {
-      text: "hi bye najor san kadan nakhabdr eshak lar doqu mr hassan babaei najori shahran chekhabar df dgffr fcyyg gfgdg retgd",
-      id: 2,
-      status: "answer",
-    },
-    { text: "who is elon", id: 3, status: "question" },
-    { text: "elon war?", id: 4, status: "answer" },
-    { text: "who is elon", id: 5, status: "question" },
-    { text: "elon war?", id: 6, status: "answer" },
-    { text: "who is elon", id: 7, status: "question" },
-    { text: "elon war?", id: 8, status: "answer" },
-  ];
+  const [message, setMessage] = useState("");
+  const [chatHistory, setChatHistory] = useState([]);
+  
   const scrollViewRef = useRef(null);
+
+  const messageHandler = (textMessage) => {
+    setMessage(textMessage);
+  };
+  const sendMessageHandler = async () => {
+
+    setMessage("");
+    Keyboard.dismiss();
+    setChatHistory([...chatHistory, { userMessage:message}]);
+
+    const apiKey = "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";
+    const response = await axios.post(
+      "https://api.openai.com/v1/engines/text-davinci-003/completions",
+      {
+        prompt: message,
+        max_tokens: 50,
+        temperature: 0.5,
+      },
+      { headers: { Authorization: `Bearer ${apiKey}` } }
+    );
+    const { choices } = response.data;
+    const botMessage = choices[0].text.trim();
+
+
+    setChatHistory([...chatHistory, {userMessage:message, botMessage }]);
+
+  };
+useEffect(()=>{
+  scrollViewRef.current.scrollToEnd({ animated: true });
+},[chatHistory])
+
   return (
+    <SafeAreaView style={{flex:1,backgroundColor:'#1c1c1c'}} >
     <View style={styles.container}>
+      
       <View style={styles.eyesContainer}>
         <View style={{ flexDirection: "row" }}>
           <View style={styles.leftEye}></View>
@@ -63,35 +62,31 @@ const Home = () => {
           <View style={styles.lip}></View>
         </View>
       </View>
-      <View style={styles.chatContainer}>
-
+      
+      <View style={styles.chatContainer} >
+        <View style={{flex:1}} >
         <FlatList
+        
           ref={scrollViewRef}
           contentContainerStyle={styles.messageContainer}
           data={chatHistory}
           renderItem={(item) => {
             return (
               <>
-            <View
-                style={styles.userMessageContainer}
-              >
-                <Text style={styles.nameBot}>{item.item.userMessage}</Text>
-              </View>
-              
-              <View style={styles.botMessageContainer} 
-            >
-              <Text style={styles.nameBot}>{item.item.botMessage}</Text>
-            </View>
-            </>
+                <View style={styles.userMessageContainer}>
+                  <Text style={styles.nameBot}>{item.item.userMessage}</Text>
+                </View>
 
+                <View style={styles.botMessageContainer}>
+                  <Text style={styles.nameBot}>{item.item.botMessage}</Text>
+                </View>
+              </>
             );
           }}
           keyExtractor={(item) => item.userMessage}
         />
-
-
-      </View>
-      <View style={styles.textInputContainer}>
+        </View>
+      <KeyboardAvoidingView behavior="height"style={styles.textInputContainer}>
           <TextInput
             style={styles.textInput}
             placeholder="I'm waiting"
@@ -100,29 +95,42 @@ const Home = () => {
             value={message}
 
           />
-          <FontAwesome name="send-o" size={25} color="black" onPress={sendMessageHandler} style={{paddingHorizontal:10}} />
-        </View>
+          <FontAwesome
+            name="send-o"
+            size={25}
+            color="black"
+            onPress={sendMessageHandler}
+            style={{ paddingHorizontal: 10 }}
+          />
+        
+        </KeyboardAvoidingView>
+
+      </View>
+      
     </View>
+    </SafeAreaView>
   );
 };
 
 export default Home;
 const styles = StyleSheet.create({
   container: {
-    height: "100%",
+    flex:1,
     backgroundColor: "#1c1c1c",
     justifyContent: "space-between",
+
   },
 
   chatContainer: {
     flex: 1,
-    justifyContent: "flex-end",
+    justifyContent:'space-between',
     width: "100%",
-    backgroundColor: "#1c1c1c",
+  
     marginVertical: 20,
   },
   messageContainer: {
-    backgroundColor: "#1c1c1c",
+
+
     flexGrow:1,
     justifyContent: "flex-end",
 
@@ -141,7 +149,6 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
   },
   nameBot: {
-
     color: "white",
     backgroundColor: "#121212",
     padding: 18,
@@ -154,7 +161,7 @@ const styles = StyleSheet.create({
 
     flexDirection: "row",
     marginTop: 10,
-    marginBottom:20,
+ 
     justifyContent: "center",
     backgroundColor: "white",
     alignItems: "center",
