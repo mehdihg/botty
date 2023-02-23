@@ -28,7 +28,7 @@ const Home = () => {
     Keyboard.dismiss();
     setChatHistory([...chatHistory, { userMessage:message}]);
 
-    const apiKey = "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";
+    const apiKey = "";
     const response = await axios.post(
       "https://api.openai.com/v1/engines/text-davinci-003/completions",
       {
